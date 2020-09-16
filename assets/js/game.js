@@ -30,6 +30,7 @@ var fight = function(enemyName) {
     // if the enemy robot's health is zero or less, exit from the fight loop.
     if (enemyHealth <= 0) {
       window.alert(enemyName + " has died!");
+      playerMoney = playerMoney + 5
       break;
     } else {
       console.log(enemyName + " still has " + enemyHealth + " health left.");
@@ -72,7 +73,6 @@ var fight = function(enemyName) {
   
 };
 
-
 // End Game
 var endgame = function() {
   // if player is still alive, player wins!
@@ -87,6 +87,47 @@ else {
 };
 
 // Shop (between fights)
+var shop = function () {
+  var shopOptionPrompt = window.prompt("Would you like to REFILL your health, UPGRADE your attack, or LEAVE the store? Please enter one: 'REFILL', 'UPGRADE', or 'LEAVE' to make a choice.");
+  
+  // Using switch to carry out options
+  switch (shopOptionPrompt) {
+    case "REFILL": // new case
+    case "refill":
+      if (playerMoney >= 7) {
+        window.alert("Refilling player's health by 50 for 7 dollars.");
+  
+        playerHealth = playerHealth + 50;
+        playerMoney = playerMoney - 7;
+      }
+      else {
+        window.alert("You don't have enough money!");
+      }
+  
+      break;
+    case "UPGRADE": // new case
+    case "upgrade":
+      if (playerMoney >= 7) {
+        window.alert("Upgrading player's attack by 10 for 7 dollars.");
+  
+        playerAttack = playerAttack + 10;
+        playerMoney = playerMoney - 7;
+      }
+      else {
+        window.alert("You don't have enough money!");
+      }
+  
+      break;
+    case "LEAVE": // new case
+    case "leave":
+      window.alert("Leaving the store.");
+      break;
+    default:
+      window.alert("You did not pick a valid option. Try again.");
+      shop();
+      break;
+  }
+}
 
 //Start Game
 var startGame = function() {
@@ -108,6 +149,13 @@ var startGame = function() {
       playerName + " versus " + pickedEnemyName);
 
       fight (pickedEnemyName);
+
+      // if we're not at the lest enemy in the array
+      if (playerHealth > 0 && i < enemyNames.length - 1) {
+        // ask if user wants to enter the shop
+        var storeConfirm = window.confirm("The fight is over, visit the store before the next round?")
+        if (storeConfirm) {shop();}
+      }
       }
       else {
         window.alert("GAME OVER!")
