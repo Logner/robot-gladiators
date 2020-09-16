@@ -13,6 +13,11 @@ var enemyNames = ["Roborto", "Amy Android", "Robo Trumble"];
 var enemyHealth = 50;
 var enemyAttack = 12;
 
+var randomNumber = function(max, min) {
+  var value = Math.floor(Math.random() * (max-min+1)) + min;
+  return value;
+}
+
 
 // Fight (Core gameplay)
 var fight = function(enemyName) {
@@ -21,8 +26,9 @@ var fight = function(enemyName) {
   if (promptFight === "fight" || promptFight === "FIGHT") {
 
     while (enemyHealth > 0 && playerHealth > 0){
-    // remove enemy's health by subtracting the amount set in the playerAttack variable
-    enemyHealth = enemyHealth - playerAttack;
+    // Randomize attack damage
+      var damage = randomNumber(playerAttack, playerAttack - 3);
+      enemyHealth = Math.max(0, enemyHealth - damage);
     console.log(
       playerName + " attacked " + enemyName + ". " + enemyName + " now has " + enemyHealth + " health remaining."
     );
@@ -37,7 +43,7 @@ var fight = function(enemyName) {
     }
   
     // remove player's health by subtracting the amount set in the enemyAttack variable
-    playerHealth = playerHealth - enemyAttack;
+    playerHealth = Math.max(0, playerHealth - enemyAttack);
     console.log(
       enemyName + " attacked " + playerName + ". " + playerName + " now has " + playerHealth + " health remaining."
     );
@@ -59,7 +65,7 @@ var fight = function(enemyName) {
     if (confirmSkip) {
       window.alert(playerName + " has decided to skip this fight. Goodbye!");
       // subtract money from playerMoney for skipping
-      playerMoney = playerMoney - 10;
+      playerMoney = Math.max(0,playerMoney - 10);
       console.log('playerMoney', playerMoney);
     }
     // if no (false), ask question again by running fight() again
@@ -140,13 +146,15 @@ var startGame = function() {
 //  Iterating through Enemies
   for(var i = 0; i < enemyNames.length; i++) {
       if (playerHealth > 0) {
-      //Picking the enemy and resetting the health
+      //Picking the enemy and initializing enemy health and attack
       var pickedEnemyName = enemyNames[i];
-      enemyHealth=50;
+      enemyHealth=randomNumber(60, 40);
+      enemyAttack=randomNumber(10, 4);
 
       // announcing the round
       window.alert("Welcome to Robot Gladiators Round "+(i+1)+"!\n\n"+
       playerName + " versus " + pickedEnemyName);
+
 
       fight (pickedEnemyName);
 
