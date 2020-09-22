@@ -16,16 +16,39 @@ var getPlayerName = function () {
   }
 }
 
+var fightOrSkip = function() {
+  // ask user if they'd like to fight or skip using  function
+  var promptFight = window.prompt('Would you like FIGHT or SKIP this battle? Enter "FIGHT" or "SKIP" to choose.').toLowerCase();
+
+  // Conditional Recursive Function Call
+  if (promptFight === "" || promptFight === null) {
+    window.alert("You need to provide a valid answer! Please try again.");
+    return fightOrSkip();
+  }
+  // if user picks "skip" confirm and then stop the loop
+  if (promptFight === "skip") {
+    // confirm user wants to skip
+    var confirmSkip = window.confirm("Are you sure you'd like to quit?");
+
+    // if yes (true), leave fight
+    if (confirmSkip) {
+      window.alert(playerInfo.name + " has decided to skip this fight. Goodbye!");
+      // subtract money from playerMoney for skipping
+      playerInfo.playerMoney = playerInfo.money - 10;
+      return true;
+    }
+  }
+}
+
 
 // Fight (Core gameplay)
 var fight = function(enemy) {
   //window.alert("Welcome to Robot Gladiators!");
-  var promptFight = window.prompt("Would you like to FIGHT or SKIP this battle? Enter 'FIGHT' or 'SKIP' to choose.");
-  if (promptFight === "fight" || promptFight === "FIGHT") {
-
-    while (enemy.health > 0 && playerInfo.health > 0){
-    // Randomize attack damage
-      var damage = randomNumber(playerInfo.attack, playerInfo.attack - 3);
+  // repeat and execute as long as the enemy robot is alive 
+  while(enemy.health > 0 && playerInfo.health > 0) {
+    if (fightOrSkip()) {break;}
+    else { // <-- Replace code with this function call
+    var damage = randomNumber( playerInfo.attack, playerInfo.attack - 3);
       enemy.health = Math.max(0, enemy.health - damage);
     console.log(
       playerInfo.name + " attacked " + enemy.name + ". " + enemy.name + " now has " + enemy.health + " health remaining."
@@ -54,27 +77,7 @@ var fight = function(enemy) {
       console.log(playerInfo.name + " still has " + playerInfo.health + " health left.");
     }
   }
-    // if player choses to skip
-    } else if (promptFight === "skip" || promptFight === "SKIP") {
-    // confirm user wants to skip
-    var confirmSkip = window.confirm("Are you sure you'd like to skip?");
-  
-    // if yes (true), leave fight
-    if (confirmSkip) {
-      window.alert(playerInfo.name + " has decided to skip this fight. Goodbye!");
-      // subtract money from playerInfo.money for skipping
-      playerInfo.money = Math.max(0,playerInfo.money - 10);
-      console.log('playerInfo.money', playerInfo.money);
-    }
-    // if no (false), ask question again by running fight() again
-    else {
-      fight();
-    }
-  } else {
-    window.alert("You need to pick a valid option. Try again!");
-    fight(enemy);
-  }
-  
+}
 };
 
 // End Game
@@ -103,27 +106,26 @@ var endgame = function() {
 
 // Shop (between fights)
 var shop = function () {
-  var shopOptionPrompt = window.prompt("Would you like to REFILL your health, UPGRADE your attack, or LEAVE the store? Please enter one: 'REFILL', 'UPGRADE', or 'LEAVE' to make a choice.");
-  
+  var shopOptionPrompt = window.prompt(
+    "Would you like to REFILL your health, UPGRADE your attack, or LEAVE the store? Please enter one 1 for REFILL, 2 for UPGRADE, or 3 for LEAVE."
+  );  
   // Using switch to carry out options
-  switch (shopOptionPrompt) {
-    case "REFILL": // new case
-    case "refill":
-        playerInfo.refillHealth();
-        break;
-    case "UPGRADE": // new case
-    case "upgrade":
-        playerInfo.upgradeAttack()
-        break;
-    case "LEAVE": // new case
-    case "leave":
-      window.alert("Leaving the store.");
-      break;
-    default:
-      window.alert("You did not pick a valid option. Try again.");
-      shop();
-      break;
-  }
+// use switch case to carry out action
+switch (parseInt(shopOptionPrompt)) {
+  case 1:
+    playerInfo.refillHealth();
+    break;
+  case 2:
+    playerInfo.upgradeAttack();
+    break;
+  case 3:
+    window.alert("Leaving the store.");
+    break;
+  default:
+    window.alert("You did not pick a valid option. Try again.");
+    shop();
+    break;
+}
 }
 
 // Initializing Player and Enemies
